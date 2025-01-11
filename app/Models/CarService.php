@@ -18,7 +18,8 @@ class CarService extends Model
         'photo',
         'about',
         'duration_in_hour',
-        'price'
+        'price',
+        'icon'
     ];
     public function storeServices()
     {

@@ -24,7 +24,31 @@ class CarServiceResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255)
+                    ->helperText('Masukkan data kota')
+                    ->unique(),
+                Forms\Components\FileUpload::make('icon')
+                    ->required()
+                    ->image()
+                    ->directory('icons'),
+                Forms\Components\FileUpload::make('photo')
+                    ->required()
+                    ->image()
+                    ->directory('services'),
+                Forms\Components\Textarea::make('about')
+                    ->required()
+                    ->rows(10)
+                    ->cols(20),
+                Forms\Components\TextInput::make('duration_in_hour')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('price')
+                    ->required()
+                    ->numeric()
+                    ->prefix('IDR')
+
             ]);
     }
 
@@ -32,7 +56,11 @@ class CarServiceResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\ImageColumn::make('photo'),
+                Tables\Columns\TextColumn::make('about'),
+                Tables\Columns\TextColumn::make('duration_in_hour'),
+                Tables\Columns\TextColumn::make('price'),
             ])
             ->filters([
                 //
