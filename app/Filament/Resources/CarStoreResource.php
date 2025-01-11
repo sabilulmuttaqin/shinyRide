@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CarStoreResource\Pages;
 use App\Filament\Resources\CarStoreResource\RelationManagers;
+use App\Filament\Resources\CarStoreResource\RelationManagers\PhotosRelationManager;
+use App\Filament\Resources\CarStoreServiceResource\RelationManagers\CarServicesRelationManager;
 use App\Models\CarStore;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -24,7 +26,63 @@ class CarStoreResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255)
+                    ->helperText('Masukkan data kota')
+                    ->unique(),
+
+                Forms\Components\FileUpload::make('thumbnail')
+                    ->required()
+                    ->image()
+                    ->directory('stores')
+                    ->columnSpan(2),
+
+                Forms\Components\Select::make('is_open')
+                    ->options([
+                        true => 'Open',
+                        false => 'Close',
+                    ])
+                    ->required(),
+
+                Forms\Components\Select::make('is_full')
+                    ->options([
+                        true => 'Full',
+                        false => 'Available',
+                    ])
+                    ->required(),
+
+                Forms\Components\TextInput::make('cs_name')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('phone_number')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\Textarea::make('address')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('rating')
+                    ->required()
+                    ->numeric(),
+
+                Forms\Components\Select::make('city_id')
+                    ->relationship('city', 'name')
+                    ->required()
+                    ->searchable()
+                    ->preload(),
+
+                // Forms\Components\Repeater::make('storeServices')
+                //     ->relationship()
+                //     ->schema([
+                //         Forms\Components\Select::make('car_service_id')
+                //             ->relationship('service', 'name')
+                //             ->required(),
+                //     ])
+
+
+
             ]);
     }
 
@@ -32,13 +90,34 @@ class CarStoreResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\IconColumn::make('is_open')
+                    ->boolean()
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->label('Open?'),
+                Tables\Columns\IconColumn::make('is_full')
+                    ->boolean()
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->label('Full?'),
+
+                Tables\Columns\TextColumn::make('city.name')
+                    ->label('Kota'),
+                Tables\Columns\ImageColumn::make('thumbnail')
+                    ->label('Thumbnail'),
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -50,7 +129,8 @@ class CarStoreResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PhotosRelationManager::class,
+            CarServicesRelationManager::class
         ];
     }
 
