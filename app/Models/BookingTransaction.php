@@ -14,11 +14,11 @@ class BookingTransaction extends Model
 
     public function store()
     {
-        return $this->belongsTo(CarStore::class);
+        return $this->belongsTo(CarStore::class, 'car_store_id');
     }
 
     public function service()
     {
-        return $this->belongsTo(CarService::class);
+        return $this->belongsTo(CarService::class, 'car_service_id');
     }
 }

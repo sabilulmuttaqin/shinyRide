@@ -24,7 +24,44 @@ class BookingTransactionResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('phone_number')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('booking_trx_id')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\FileUpload::make('proof')
+
+                    ->image()
+                    ->directory('proofs'),
+                Forms\Components\Select::make('is_paid')
+                    ->options([
+                        true => 'Success',
+                        false => 'Pending',
+                    ])
+                    ->required(),
+                Forms\Components\TextInput::make('total_amount')
+                    ->required()
+                    ->numeric()
+                    ->prefix('IDR'),
+                Forms\Components\Select::make('car_store_id')
+                    ->relationship('store', 'name')
+                    ->required()
+                    ->searchable()
+                    ->preload(),
+                Forms\Components\Select::make('car_service_id')
+                    ->relationship('service', 'name')
+                    ->required()
+                    ->searchable()
+                    ->preload(),
+
+                Forms\Components\DatePicker::make('started_at')
+                    ->required(),
+                Forms\Components\TimePicker::make('time_at')
+                    ->required(),
             ]);
     }
 
@@ -32,7 +69,18 @@ class BookingTransactionResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\TextColumn::make('phone_nmber'),
+                Tables\Columns\TextColumn::make('booking_trx_id'),
+                Tables\Columns\TextColumn::make('store.name'),
+                Tables\Columns\TextColumn::make('started_at'),
+                Tables\Columns\IconColumn::make('is_paid')
+                    ->boolean()
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->label('Sudah bayar?'),
             ])
             ->filters([
                 //
